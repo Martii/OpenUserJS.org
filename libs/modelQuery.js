@@ -52,7 +52,13 @@ var orderDirs = ['asc', 'desc'];
 var parseModelListSort = function (aModelListQuery, aOrderBy, aOrderDir, aDefaultSortFn) {
   if (aOrderBy) {
     if (_.isUndefined(aOrderDir) || !_.contains(orderDirs, aOrderDir)) {
-      aOrderDir = 'asc';
+      switch (aOrderBy) {
+        case 'name':
+          aOrderDir = 'asc';
+          break;
+        default:
+          aOrderDir = 'desc';
+      }
     }
 
     if (_.has(aModelListQuery.model.schema.paths, aOrderBy)) {

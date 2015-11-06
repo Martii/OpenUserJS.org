@@ -173,11 +173,26 @@ exports.pageMetadata = pageMetadata;
 function orderDir(aReq, aOptions, aOrderBy, aOrderDirDefault) {
   var orderDirReverse = null;
 
+  // isOrderedBy...
+  aOptions.isOrderedBy = {};
+  if (aReq.query.orderBy) {
+    aOptions.isOrderedBy[aReq.query.orderBy] = true;
+  } else {
+    aOptions.isOrderedBy['rating'] = true;
+  }
+
+  // Protect against missing parm
   aOrderDirDefault = aOrderDirDefault || 'desc';
+
+  // Flip the order from the default
   orderDirReverse = (aOrderDirDefault === 'desc') ? 'asc' : 'desc';
+
+  // Create the object in case it doesn't exist
   if (typeof (aOptions.orderDir) === 'undefined') {
     aOptions.orderDir = {};
   }
-  aOptions.orderDir[aOrderBy] = aReq.query.orderDir === aOrderDirDefault ? orderDirReverse : aOrderDirDefault;
+
+  // Extend the options identifier to a ascending/descending or default state
+  aOptions.orderDir[aOrderBy] = aReq.query.orderDir === aOrderDirDefault || !!!aReq.query.orderDir ? orderDirReverse : aOrderDirDefault;
 }
 exports.orderDir = orderDir;
