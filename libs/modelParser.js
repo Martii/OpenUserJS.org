@@ -93,12 +93,7 @@ var getScriptViewSourcePageUrl = function (aScript) {
 };
 
 var getScriptEditAboutPageUrl = function (aScript) {
-  var isLib = aScript.isLib || false;
-  var scriptPath = aScript.installName
-    .replace(isLib ? /\.js$/ : /\.user\.js$/, '');
-  var editUrl = scriptPath.split('/');
-  editUrl.shift();
-  return (isLib ? '/lib/' : '/script/') + editUrl.join('/') + '/edit';
+  return getScriptPageUrl(aScript) + '/edit';
 };
 
 var getScriptEditSourcePageUrl = function (aScript) {
@@ -222,7 +217,7 @@ var parseScript = function (aScriptData) {
   parseDateProperty(script, 'updated');
   parseDateProperty(script, '_since'); // Virtual
 
-  if (script._since && script._since.toString() !== script.updated.toString()) {
+  if (script._since && script.updated && script._since.toString() !== script.updated.toString()) {
     script.isUpdated = true;
   }
 
