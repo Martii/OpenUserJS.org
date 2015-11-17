@@ -48,8 +48,9 @@ exports.flag = function (aReq, aRes, aNext) {
 
     var type = aReq.params[0];
     var isLib = null;
-    var installName = null;
-    var path = aReq.params[1];
+
+    var installNameBase = null;
+    var username = null;
 
     var authedUser = aReq.session.user;
 
@@ -83,15 +84,15 @@ exports.flag = function (aReq, aRes, aNext) {
         isLib = true;
         // fallthrough
       case 'scripts':
-        installName = scriptStorage.getInstallName({
-          params: {
-            username: aReq.params[2],
-            scriptname: aReq.params[3]
-        }});
+        aReq.params.username = aReq.params[2];
+        aReq.params.scriptname = aReq.params[3]
 
-        path += type === 'libs' ? '.js' : '.user.js';
+        installNameBase = scriptStorage.getInstallNameBase(aReq);
 
-        Script.findOne({ installName: path },
+        Script.findOne({
+          installName: scriptStorage.caseSensitive(installNameBase +
+            (isLib ? '.js' : '.user.js'))
+          },
           function (aErr, aScript) {
             var fn = flagLib[flag ? 'flag' : 'unflag'];
 
@@ -101,13 +102,16 @@ exports.flag = function (aReq, aRes, aNext) {
             }
 
             fn(Script, aScript, authedUser, reason, function (aFlagged) {
-              aRes.redirect((isLib ? '/libs/' : '/scripts/') + encodeURI(installName));
+              aRes.redirect((isLib ? '/libs/' : '/scripts/') + scriptStorage.getInstallNameBase(
+                aReq, { encoding: 'uri' }));
             });
 
         });
         break;
       case 'users':
-        User.findOne({ name: { $regex: new RegExp('^' + path + '$', "i") } },
+        username = aReq.params[1];
+
+        User.findOne({ name: { $regex: new RegExp('^' + username + '$', "i") } },
           function (aErr, aUser) {
             var fn = flagLib[flag ? 'flag' : 'unflag'];
 
@@ -117,7 +121,7 @@ exports.flag = function (aReq, aRes, aNext) {
             }
 
             fn(User, aUser, authedUser, reason, function (aFlagged) {
-              aRes.redirect('/users/' + encodeURI(path));
+              aRes.redirect('/users/' + encodeURIComponent(username));
             });
 
           });
