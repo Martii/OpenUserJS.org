@@ -1,22 +1,18 @@
-## Tampermonkey for Chrome
+## Tampermonkey for Chromium
 
 ![Tampermonkey icon][tampermonkeyIcon]
 
-Tampermonkey is a userscript manager for [Chrome][chrome] and other similar web browsers, written by Jan Biniok. There are also versions for [Opera][opera] and [Android][tampermonkeyForAndroid].
+Tampermonkey is a userscript manager for [Chromium][chromium] and other similar web browsers, written by Jan Biniok. There are also versions for [Opera][opera] and [Android][tampermonkeyForAndroid].
 
 ### Installing Tampermonkey
 
-To get userscripts going with the desktop version of Tampermonkey, first you have to install it from the [Chrome Web Store][gooChromeWebStoreTampermonkey]. The version in the store works with recent versions of Chrome *(v22 or newer, which are based on the Blink rendering engine)*. If you have to use an older version of Chrome, you may be able to get a compatible extension from [Tampermonkey.net][tampermonkeyNet].
+To get userscripts going with the desktop version of Tampermonkey, first you have to install it from the [Chrome Web Store][gooChromeWebStoreTampermonkey]. The version in the store works with recent versions of Chromium *(v22 or newer, which are based on the Blink rendering engine)*. If you have to use an older version of Chromium, you may be able to get a compatible extension from [Tampermonkey.net][tampermonkeyNet].
 
 ![Screenshot of Tampermonkey page in Chrome Web Store][tampermonkeyGooChromeWebStoreScreenshot]
 
-From the Tampermonkey page in the Chrome Store, click the blue "+ FREE" button to install the extension. Chrome will ask you to confirm the extension. Click "Add".
+From the Tampermonkey page in the Chrome Store, click the blue "ADD TO CHROME" button to install the extension. Chromium will ask you to confirm the extension. Click "Add extension".
 
-![Screenshot of Chrome's confirm extension dialog][tampermonkeyChromeScreenshot1]
-
-Once Tampermonkey has finished installing, you should see a confirmation page from the Tampermonkey website and a pop-up confirming that Tampermonkey has been added to Chrome. This should point to a new Tampermonkey icon at the top of the Chrome window, next to the Omnibox.
-
-![Screenshot of Tampermonkey installation][tampermonkeyChromeScreenshot2]
+Once Tampermonkey has finished installing, you should see a confirmation page from the Tampermonkey website and briefly a pop-up confirming that Tampermonkey has been added to Chromium. This should point to a new Tampermonkey icon at the top of the Chromium window, next to the Omnibox.
 
 ### Installing Userscripts
 
@@ -49,7 +45,7 @@ Sometimes, when you use more than one userscript on the same web page, they need
 ### More
 
 * [Get Tampermonkey from the Chrome Web Store][gooChromeWebStoreTampermonkey]
-* [Tampermonkey for Chromium][tampermonkeyForChromium]
+* [Tampermonkey for Chrome][tampermonkeyForChrome]
 * [Tampermonkey for Opera][tampermonkeyForOpera]
 * [Tampermonkey for Android][tampermonkeyForAndroid]
 * [Tampermonkey.net][tampermonkeyNet] - documentation, discussion and downloads for other versions of Tampermonkey.
@@ -58,17 +54,15 @@ Sometimes, when you use more than one userscript on the same web page, they need
 [oujsFavicon]: https://raw.githubusercontent.com/OpenUserJs/OpenUserJS.org/master/public/images/favicon16.png
 [oujs]: https://openuserjs.org/
 [tampermonkeyIcon]: https://raw.githubusercontent.com/wiki/OpenUserJS/OpenUserJS.org/images/tampermonkey_icon.png "Tampermonkey"
-[chrome]: Chrome
+[chromium]: Chromium
 [opera]: Opera
 [tampermonkeyForAndroid]: Tampermonkey-for-Android
 [gooChromeWebStoreTampermonkey]: https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo
 [tampermonkeyNet]: http://tampermonkey.net/
-[tampermonkeyGooChromeWebStoreScreenshot]: https://raw.githubusercontent.com/wiki/OpenUserJS/OpenUserJS.org/images/tampermonkey1.png "Tampermonkey in the Chrome Web Store"
-[tampermonkeyChromeScreenshot1]: https://raw.githubusercontent.com/wiki/OpenUserJS/OpenUserJS.org/images/tampermonkey2.png "Confirm extension"
-[tampermonkeyChromeScreenshot2]: https://raw.githubusercontent.com/wiki/OpenUserJS/OpenUserJS.org/images/tampermonkey3.png "Tampermonkey installed"
+[tampermonkeyGooChromeWebStoreScreenshot]: https://raw.githubusercontent.com/wiki/OpenUserJS/OpenUserJS.org/images/tampermonkey_cr.gif "Tampermonkey in the Chrome Web Store"
 [oujsScriptPageScreenshot1]: https://raw.githubusercontent.com/wiki/OpenUserJS/OpenUserJS.org/images/openuserjs_script.png "Ready to install a script"
-[tampermonkeyChromeScreenshot3]: https://raw.githubusercontent.com/wiki/OpenUserJS/OpenUserJS.org/images/tampermonkey4.png "Installing a script"
-[tampermonkeyChromeScreenshot4]: https://raw.githubusercontent.com/wiki/OpenUserJS/OpenUserJS.org/images/tampermonkey5.png "Tampermonkey Dashboard"
-[tampermonkeyForChromium]: Tampermonkey-for-Chromium
+[tampermonkeyChromeScreenshot3]: https://raw.githubusercontent.com/wiki/OpenUserJS/OpenUserJS.org/images/tampermonkey_cr4.gif "Installing a script"
+[tampermonkeyChromeScreenshot4]: https://raw.githubusercontent.com/wiki/OpenUserJS/OpenUserJS.org/images/tampermonkey_cr5.png "Tampermonkey Dashboard"
+[tampermonkeyForChrome]: Tampermonkey-for-Chrome
 [tampermonkeyForOpera]: Tampermonkey-for-Opera
 [tampermonkeyForAndroid]: Tampermonkey-for-Android
