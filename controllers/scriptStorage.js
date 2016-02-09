@@ -235,8 +235,6 @@ exports.sendScript = function (aReq, aRes, aNext) {
       aStream.on('end', function () {
         var source = chunks.join(''); // NOTE: Watchpoint
 
-        console.log('MINIFICATION REQUEST:', 'installName: ' + aScript.installName);
-
         try {
           source = UglifyJS.minify(source, {
             fromString: true,
