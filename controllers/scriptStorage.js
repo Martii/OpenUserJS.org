@@ -207,7 +207,7 @@ exports.sendScript = function (aReq, aRes, aNext) {
     aReq.params.isLib = true;
   }
 
-  var accept = aReq.headers.accept;
+  let accept = aReq.headers.accept;
 
   if (0 !== aReq.url.indexOf('/libs/') && accept === 'text/x-userscript-meta') {
     exports.sendMeta(aReq, aRes, aNext);
@@ -215,7 +215,7 @@ exports.sendScript = function (aReq, aRes, aNext) {
   }
 
   exports.getSource(aReq, function (aScript, aStream) {
-    var chunks = [];
+    let chunks = [];
 
     if (!aScript) {
       aNext();
@@ -230,7 +230,19 @@ exports.sendScript = function (aReq, aRes, aNext) {
     if (!/\.min(\.user)?\.js$/.test(aReq._parsedUrl.pathname) ||
       process.env.DISABLE_SCRIPT_MINIFICATION === 'true') {
       //
-      aStream.pipe(aRes);
+//       aStream.pipe(aRes);
+
+      aStream.on('data', function (aData) {
+        chunks.push(aData);
+      });
+
+      aStream.on('end', function () {
+        let source = chunks.join(''); // NOTE: Watchpoint
+
+        aRes.write(source);
+        aRes.end();
+      });
+
     } else {
       // Otherwise set some defaults per script request via *UglifyJS2*
       // and try minifying output
@@ -240,8 +252,8 @@ exports.sendScript = function (aReq, aRes, aNext) {
       });
 
       aStream.on('end', function () {
-        var source = chunks.join(''); // NOTE: Watchpoint
-        var msg = null;
+        let source = chunks.join(''); // NOTE: Watchpoint
+        let msg = null;
 
         try {
           source = UglifyJS.minify(source, {
