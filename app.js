@@ -136,58 +136,83 @@ process.on('SIGINT', function () {
 var sessionStore = new MongoStore({ mongooseConnection: db });
 
 // See https://hacks.mozilla.org/2013/01/building-a-node-js-server-that-wont-melt-a-node-js-holiday-season-part-5/
-app.use(function (aReq, aRes, aNext) {
-  var pathname = null;
-  var maxLag = process.env.BUSY_LAG;
 
-  if (typeof maxLag !== 'number') {
-    maxLag = parseInt(maxLag);
+// Helper function to ensure value is type `number` or `null`
+// Usually this should be in `./libs/helpers.js` but keeping local
+//   for extra caution against editing
+function ensureNumberOrNull(aEnvVar) {
+  if (typeof aEnvVar !== 'number') {
+    aEnvVar = parseInt(aEnvVar);
 
-    if (maxLag !== maxLag) {
-      maxLag = null;
+    if (aEnvVar !== aEnvVar) { // NOTE: ES6 `Number.isNaN`
+      aEnvVar = null;
     }
   }
 
-  toobusy.maxLag(maxLag || 70);
+  return aEnvVar;
+}
 
-  if (process.env.FORCE_BUSY_ABSOLUTE === 'true') { // check for absolute forced busy
+app.use(function (aReq, aRes, aNext) {
+  var pathname = aReq._parsedUrl.pathname;
+  var maxLag = null;
+  var hostMaxMem = process.env.HOST_MAXMEM_BYTES || 1073741824; // NOTE: Default 1GiB
+  var hostMem = null;
+  var usedMem = null;
+
+  if (
+    /^\/favicon\.ico$/.test(pathname) ||
+      /^\/redist\//.test(pathname) ||
+        /^\/less\//.test(pathname) ||
+          /^\/css\//.test(pathname) ||
+            /^\/images\//.test(pathname) ||
+              /^\/fonts\//.test(pathname)
+  ) {
+    aNext(); // NOTE: Allow styling to pass through on these routes
+    return;
+  }
+
+  if (process.env.FORCE_BUSY_ABSOLUTE === 'true') { // Always busy
     aRes.status(503).send(); // NOTE: No UI period just response header
+    return;
 
-  } else if (process.env.FORCE_BUSY === 'true') { // check for graceful forced busy
-    pathname = aReq._parsedUrl.pathname;
+  } else if (process.env.FORCE_BUSY === 'true') { // Graceful busy
+    statusCodePage(aReq, aRes, aNext, {
+      statusCode: 503,
+      statusMessage:
+        'We are experiencing technical difficulties right now. Please try again later.'
+    });
+    return;
 
-    if (
-      /^\/favicon\.ico$/.test(pathname) ||
-        /^\/redist\//.test(pathname) ||
-          /^\/less\//.test(pathname) ||
-            /^\/css\//.test(pathname) ||
-              /^\/images\//.test(pathname) ||
-                /^\/fonts\//.test(pathname)
-    ) {
-      aNext(); // NOTE: Allow styling pass through on these routes
-    } else {
-      statusCodePage(aReq, aRes, aNext, {
-        statusCode: 503,
-        statusMessage:
-          'We are experiencing technical difficulties right now. Please try again later.'
-      });
-    }
-  } else if (toobusy()) { // check if we're toobusy
-    pathname = aReq._parsedUrl.pathname;
-
+  } else { // Weighted busy
     if (
       /^\/(?:install|src)/.test(pathname) ||
         /^\/scripts\/.*\/source\/?$/.test(pathname)
     ) {
+      maxLag = process.env.BUSY_MAXLAG_SOURCES;
+    } else {
+      maxLag = process.env.BUSY_MAXLAG_VIEWS;
+    }
+
+    maxLag = ensureNumberOrNull(maxLag);
+
+    // Calculate current whole percentage of RSS memory used
+    usedMem = parseInt(process.memoryUsage().rss / hostMaxMem) * 100;
+
+    // Compare current RSS memory used to maximum
+    if (usedMem > (ensureNumberOrNull(process.env.BUSY_MAXMEM) || 75)) {
+      maxLag = ensureNumberOrNull(process.env.BUSY_MAXLAG_MAXMEM) || 10; // Automatic low serving
+    }
+
+    toobusy.maxLag(maxLag || 70);
+
+    if (toobusy()) { // check if we're toobusy
       statusCodePage(aReq, aRes, aNext, {
         statusCode: 503,
-        statusMessage: 'We are busy right now. Please try again later.'
+        statusMessage: 'We are very busy right now. Please try again later.'
       });
     } else {
-      aNext(); // NOTE: Try to serve pages as much as possible as compared to source
+      aNext(); // not toobusy
     }
-  } else {
-    aNext();
   }
 });
 
