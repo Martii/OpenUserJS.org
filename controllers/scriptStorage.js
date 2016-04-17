@@ -261,6 +261,7 @@ exports.keyScript = function (aReq, aRes, aNext) {
     // NOTE: Lazy find
     if (rUserJS.test(scriptName)) {
       for (let accept of accepts) {
+
         let media = mediaType.fromString(accept);
         if (media.isValid()) {
 
@@ -328,12 +329,12 @@ exports.keyScript = function (aReq, aRes, aNext) {
         return;
       }
 
-      if (wantsUserScriptMeta || wantsJustAnything) {
+      if (wantsUserScriptMeta) {
         exports.sendMeta(aReq, aRes, aNext);
         return;
       }
 
-      if (!hasAcceptable) {
+      if (!wantsJustAnything && !hasAcceptable) {
         aRes.status(406).send();
         return;
       }
